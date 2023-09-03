@@ -1,0 +1,28 @@
+{
+    "builders": [
+        {
+            "type": "yandex",
+            "service_account_key_file": "{{ user `key_file` }}",
+            "folder_id": "{{ user `folder_id` }}",
+            "source_image_family": "ubuntu-1604-lts",
+            "image_name": "reddit-db-{{timestamp}}",
+            "image_family": "reddit-base",
+            "platform_id": "{{ user `platform_id` }}",
+            "zone":      "ru-central1-a",
+            "use_ipv4_nat": "true",
+            "use_internal_ip": "false",
+            "max_retries": "5",
+            "ssh_username": "{{ user `ssh_user` }}"
+        }
+    ],
+    "provisioners": [
+
+        {
+            "type": "ansible",
+            "extra_arguments": ["-vv", "--ssh-extra-args", "-o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa"],
+            "playbook_file": "ansible/playbooks/packer_db.yml",
+            "user": "{{user `ssh_user`}}",
+            "ansible_env_vars": ["ANSIBLE_CONFIG=ansible/ansible.cfg", "ANSIBLE_PIPELINING=true"]
+        }
+    ]
+}
