@@ -36,18 +36,18 @@ script:
   - echo $TF_PROVIDER_PLUGINS
   - cp terraform/yandex.tfrc "$HOME/.terraformrc"
   - cd terraform/prod
-  - terraform init -plugin-dir=$TF_PROVIDER_PLUGINS -backend=false
-  - terraform validate
+  - $BIN/terraform init -plugin-dir=$TF_PROVIDER_PLUGINS -backend=false
+  - $BIN/terraform validate
   - cd ../stage
-  - terraform init -plugin-dir=$TF_PROVIDER_PLUGINS -backend=false
-  - terraform validate
+  - $BIN/terraform init -plugin-dir=$TF_PROVIDER_PLUGINS -backend=false
+  - $BIN/terraform validate
   - cd ../../
-  - tflint --var-file=terraform.tfvars --minimum-failure-severity=error --chdir=terraform/prod/
-  - tflint --var-file=terraform.tfvars --minimum-failure-severity=error --chdir=terraform/stage/
-  - packer plugins install github.com/hashicorp/ansible
-  - packer plugins install github.com/hashicorp/yandex
-  - packer validate -var-file=packer/variables.json packer/app.json
-  - packer validate -var-file=packer/variables.json packer/db.json
+  - $BIN/tflint --var-file=terraform.tfvars --minimum-failure-severity=error --chdir=terraform/prod/
+  - $BIN/tflint --var-file=terraform.tfvars --minimum-failure-severity=error --chdir=terraform/stage/
+  - $BIN/packer plugins install github.com/hashicorp/ansible
+  - $BIN/packer plugins install github.com/hashicorp/yandex
+  - $BIN/packer validate -var-file=packer/variables.json packer/app.json
+  - $BIN/packer validate -var-file=packer/variables.json packer/db.json
   - cd ansible
   - openssl aes-256-cbc -k "$vault_key_password" -in vault.key.enc -out ~/.ansible/vault.key -d
   - ansible-lint playbooks/deploy.yml
