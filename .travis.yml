@@ -19,8 +19,8 @@ before_install:
   - export MACH_TYPE=linux_amd64
   - export TF_CLI_CONFIG_FILE="$HOME/.terraformrc"
   - export TF_PROVIDER_YANDEX_VERSION=0.97.0
-  - export TF_PROVIDER_YANDEX_DIR="$BIN/.terraform/plugins/registry.terraform.io/yandex-cloud/yandex/${TF_PROVIDER_YANDEX_VERSION}/linux_amd64/"
-  - export TF_PROVIDER_PLUGINS="$BIN/.terraform/plugins/"
+  - export TF_PROVIDER_YANDEX_DIR="~/.terraform/plugins/registry.terraform.io/yandex-cloud/yandex/${TF_PROVIDER_YANDEX_VERSION}/linux_amd64/"
+  - export TF_PROVIDER_PLUGINS="~/.terraform/plugins/"
   - curl -sLo /tmp/terraform.zip https://${TF_URL}/terraform/${TF_VERSION}/terraform_${TF_VERSION}_${MACH_TYPE}.zip
   - curl -sLo /tmp/packer.zip https://${TF_URL}/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_${MACH_TYPE}.zip
   - curl -sLo /tmp/tflint.zip https://github.com/terraform-linters/tflint/releases/download/v${TFLINT_VERSION}/tflint_${MACH_TYPE}.zip
