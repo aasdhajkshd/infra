@@ -22,10 +22,10 @@ before_install:
   - curl -sLo /tmp/tflint.zip https://github.com/terraform-linters/tflint/releases/download/v${TFLINT_VERSION}/tflint_${MACH_TYPE}.zip
   - curl -sLo /tmp/terraform-provider-yandex.zip https://${TF_URL}/terraform-provider-yandex/${TF_PROVIDER_YANDEX_VERSION}/terraform-provider-yandex_${TF_PROVIDER_YANDEX_VERSION}_${MACH_TYPE}.zip
   - mkdir -p ${TF_PROVIDER_YANDEX_DIR}
-  - unzip /tmp/terraform.zip -d ~/bin
-  - unzip /tmp/packer.zip -d ~/bin
-  - unzip /tmp/tflint.zip -d ~/bin
-  - unzip /tmp/terraform-provider-yandex.zip -d ${TF_PROVIDER_YANDEX_DIR}
+  - unzip -o /tmp/terraform.zip -d ~/bin
+  - unzip -o /tmp/packer.zip -d ~/bin
+  - unzip -o /tmp/tflint.zip -d ~/bin
+  - unzip -o /tmp/terraform-provider-yandex.zip -d ${TF_PROVIDER_YANDEX_DIR}
   - chmod +x ~/bin/{terraform,packer,tflint}
   - export PATH="~/bin:${TF_PROVIDER_YANDEX_DIR}:$PATH"
   - git version
