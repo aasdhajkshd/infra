@@ -6,7 +6,7 @@ language: bash
 before_install:
   - wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
   - echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-  - sudo apt update && sudo apt install -y terraform packer ansible ansible-lint unzip git curl wget
+  - sudo apt update && sudo apt install -y ansible ansible-lint unzip git curl wget
   - git log -1 --format='%H'
   - git config --local gc.auto 0
   - git config --global --add safe.directory '*'
@@ -29,7 +29,8 @@ before_install:
   - mkdir -p $HOME/.ansible
   - ls -Alh $HOME/bin/; ls -Alh $HOME/
   - export PATH="${BIN}:$PATH"; echo $PATH
-  - git version; tflint -v; ansible --version; ansible-lint --version; for i in terraform packer tflint; do unzip -o /tmp/$i.zip -d $BIN; chmod +x $BIN/$i; $BIN/$i --version; done
+  - for i in terraform packer tflint; do unzip -o /tmp/$i.zip -d $BIN; chmod +x $BIN/$i; $BIN/$i --version; done;
+  - git version; ansible --version; ansible-lint --version
   - unzip -o /tmp/terraform-provider-yandex.zip -d ${TF_PROVIDER_YANDEX_DIR}; ls -Alh ${TF_PROVIDER_YANDEX_DIR}
   - ln -s $HOME/.terraform/plugins/registry.terraform.io/yandex-cloud $TF_PROVIDER_PLUGINS/registry.terraform.io/hashicorp
 script:
@@ -37,6 +38,8 @@ script:
   - $BIN/terraform --version
   - cp terraform/yandex.tfrc "$HOME/.terraformrc"
   - cd terraform/prod
+  - ls -Alh /home/travis/.terraform/plugins/
+  - ls -Alh /home/travis/.terraform/plugins/registry.terraform.io/hashicorp/yandex/
   - $BIN/terraform init -plugin-dir=/home/travis/.terraform/plugins/ -backend=false
   - $BIN/terraform validate
   - cd ../stage
