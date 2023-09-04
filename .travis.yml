@@ -10,7 +10,7 @@ before_install:
   - git log -1 --format='%H'
   - git config --local gc.auto 0
   - git config --global --add safe.directory '*'
-  - BIN="~/bin"
+  - BIN="$HOME/bin"
   - export TF_VERSION=1.5.6
   - export TF_URL="hashicorp-releases.yandexcloud.net"
   - export TFLINT_VERSION=0.47.0
@@ -19,15 +19,15 @@ before_install:
   - export MACH_TYPE=linux_amd64
   - export TF_CLI_CONFIG_FILE="$HOME/.terraformrc"
   - export TF_PROVIDER_YANDEX_VERSION=0.97.0
-  - export TF_PROVIDER_YANDEX_DIR="~/.terraform/plugins/registry.terraform.io/yandex-cloud/yandex/${TF_PROVIDER_YANDEX_VERSION}/linux_amd64/"
-  - export TF_PROVIDER_PLUGINS="~/.terraform/plugins/"
+  - export TF_PROVIDER_YANDEX_DIR="$HOME/.terraform/plugins/registry.terraform.io/yandex-cloud/yandex/${TF_PROVIDER_YANDEX_VERSION}/linux_amd64/"
+  - export TF_PROVIDER_PLUGINS="$HOME/.terraform/plugins/"
   - curl -sLo /tmp/terraform.zip https://${TF_URL}/terraform/${TF_VERSION}/terraform_${TF_VERSION}_${MACH_TYPE}.zip
   - curl -sLo /tmp/packer.zip https://${TF_URL}/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_${MACH_TYPE}.zip
   - curl -sLo /tmp/tflint.zip https://github.com/terraform-linters/tflint/releases/download/v${TFLINT_VERSION}/tflint_${MACH_TYPE}.zip
   - curl -sLo /tmp/terraform-provider-yandex.zip https://${TF_URL}/terraform-provider-yandex/${TF_PROVIDER_YANDEX_VERSION}/terraform-provider-yandex_${TF_PROVIDER_YANDEX_VERSION}_${MACH_TYPE}.zip
   - mkdir -p ${TF_PROVIDER_YANDEX_DIR}
-  - mkdir -p ~/.ansible
-  - ls -Al ~/bin/
+  - mkdir -p $HOME/.ansible
+  - ls -Alh $HOME/bin/; ls -Alh $HOME/
   - for i in terraform packer tflint; do unzip -o /tmp/$i.zip -d $BIN; done
   - unzip -f /tmp/terraform-provider-yandex.zip -d ${TF_PROVIDER_YANDEX_DIR}
   - chmod +x ${BIN}/{terraform,packer,tflint}
