@@ -25,7 +25,8 @@ before_install:
   - curl -sLo /tmp/packer.zip https://${TF_URL}/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_${MACH_TYPE}.zip
   - curl -sLo /tmp/tflint.zip https://github.com/terraform-linters/tflint/releases/download/v${TFLINT_VERSION}/tflint_${MACH_TYPE}.zip
   - curl -sLo /tmp/terraform-provider-yandex.zip https://${TF_URL}/terraform-provider-yandex/${TF_PROVIDER_YANDEX_VERSION}/terraform-provider-yandex_${TF_PROVIDER_YANDEX_VERSION}_${MACH_TYPE}.zip
-  - mkdir -p ${TF_PROVIDER_YANDEX_DIR} ~/.ansible
+  - sudo mkdir -p ${TF_PROVIDER_YANDEX_DIR}
+  - mkdir -p ~/.ansible
   - ls -Al ~/bin/
   - for i in terraform packer tflint; do sudo unzip -o /tmp/$i.zip -d $BIN; done
   - sudo unzip -f /tmp/terraform-provider-yandex.zip -d ${TF_PROVIDER_YANDEX_DIR}
