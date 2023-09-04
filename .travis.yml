@@ -43,11 +43,12 @@ script:
   - ln -s $TF_PROVIDER_YANDEX_DIR .terraform/providers/registry.terraform.io/yandex-cloud/yandex/${TF_PROVIDER_YANDEX_VERSION}/
   - ls -Alh $TF_PROVIDER_PLUGINS
   - ls -Alh $TF_PROVIDER_PLUGINS/registry.terraform.io/hashicorp/yandex/
-  - $BIN/terraform init -plugin-dir=/home/travis/.terraform/plugins/ -backend=false
+  - cat $HOME/.terraformrc
+  # - $BIN/terraform init -backend=false
   - $BIN/terraform validate
-  - cd ../stage
-  - $BIN/terraform init -plugin-dir=$TF_PROVIDER_PLUGINS -backend=false
-  - $BIN/terraform validate
+  # - cd ../stage
+  # - $BIN/terraform init -plugin-dir=$TF_PROVIDER_PLUGINS -backend=false
+  # - $BIN/terraform validate
   - cd ../../
   - $BIN/tflint --var-file=terraform.tfvars.example --minimum-failure-severity=error --chdir=terraform/prod/
   - $BIN/tflint --var-file=terraform.tfvars.example --minimum-failure-severity=error --chdir=terraform/stage/

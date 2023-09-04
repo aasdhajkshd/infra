@@ -27,7 +27,6 @@ secrets.*
 .terraform/
 /.terraform/*
 .terraform.lock.hcl
-.terraform.lock.hcl
 terraform-provider-google
 terraform-provider-yandex
 .terraformrc
