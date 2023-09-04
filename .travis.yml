@@ -32,18 +32,16 @@ before_install:
   - for i in terraform packer tflint; do unzip -o /tmp/$i.zip -d $BIN; chmod +x $BIN/$i; $BIN/$i --version; done;
   - git version; ansible --version; ansible-lint --version
   - unzip -o /tmp/terraform-provider-yandex.zip -d ${TF_PROVIDER_YANDEX_DIR}; ls -Alh ${TF_PROVIDER_YANDEX_DIR}
-  - ln -s $HOME/.terraform/plugins/registry.terraform.io/yandex-cloud $TF_PROVIDER_PLUGINS/registry.terraform.io/hashicorp
 script:
   - echo $TF_PROVIDER_PLUGINS
   - $BIN/terraform --version
   - cp terraform/yandex.tfrc "$HOME/.terraformrc"
-  - cd terraform/prod; mkdir -p .terraform/{providers/registry.terraform.io/yandex-cloud/yandex/${TF_PROVIDER_YANDEX_VERSION},modules}
+  - cd terraform/prod; mkdir -p .terraform/{providers/registry.terraform.io/yandex-cloud/yandex/${TF_PROVIDER_YANDEX_VERSION},{providers/registry.terraform.io/hashicorp/yandex/${TF_PROVIDER_YANDEX_VERSION},modules}
   - echo -e -n "[\n \"$TF_PROVIDER_PLUGINS\"\n]" > .terraform/plugin_path
   - echo '{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"app","Source":"../modules/app","Dir":"../modules/app"},{"Key":"db","Source":"../modules/db","Dir":"../modules/db"}]}' > .terraform/modules/modules.json
   - ln -s $TF_PROVIDER_YANDEX_DIR .terraform/providers/registry.terraform.io/yandex-cloud/yandex/${TF_PROVIDER_YANDEX_VERSION}/
-  - ls -Alh $TF_PROVIDER_PLUGINS
-  - ls -Alh $TF_PROVIDER_PLUGINS/registry.terraform.io/hashicorp/yandex/
-  - cat $HOME/.terraformrc
+  - ln -s $TF_PROVIDER_YANDEX_DIR .terraform/providers/registry.terraform.io/hashicorp/yandex/${TF_PROVIDER_YANDEX_VERSION}/
+  - $BIN/terraform providers lock -platform=linux_amd64
   # - $BIN/terraform init -backend=false
   - $BIN/terraform validate
   # - cd ../stage
