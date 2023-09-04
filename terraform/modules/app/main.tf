@@ -12,7 +12,6 @@ resource "yandex_compute_instance" "reddit-app" {
   }
 
   metadata = {
-    # user-data = file("meta.yaml")
     ssh-keys = "ubuntu:${file(var.public_key_path)}"
   }
 
@@ -30,17 +29,7 @@ resource "yandex_compute_instance" "reddit-app" {
 
   network_interface {
     subnet_id = var.subnet_id
-    # subnet_id = yandex_vpc_subnet.app-subnet.id
-    nat = true
-  }
-
-  provisioner "file" {
-    source      = "files/puma.service"
-    destination = "/tmp/puma.service"
-  }
-
-  provisioner "remote-exec" {
-    script = "files/deploy.sh"
+    nat       = true
   }
 
   connection {

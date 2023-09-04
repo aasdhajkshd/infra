@@ -1,45 +1,62 @@
 ---
-dist: trusty
-version: ~> 1.0
+dist: jammy
+version: ~> 22.04
 env:
-  - TF_VERSION=0.12.19
+  - TF_VERSION=1.5.6
   - TF_URL="hashicorp-releases.yandexcloud.net"
   - TFLINT_VERSION=0.47.0
   - TF_INPUT=false
+  - TF_CLI_CONFIG_FILE="$HOME/.terraformrc"
   - PACKER_VERSION=1.9.4
   - MACH_TYPE=linux_amd64
 sudo: required
 language: bash
 before_install:
-  - curl https://raw.githubusercontent.com/express42/otus-homeworks/2023-03/run.sh | bash
   - sudo apt-get update
-  - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-  - sudo python get-pip.py
-  - sudo pip install cryptography==2.2.2
-  - sudo pip install ansible==2.6
-  - sudo pip install ansible-lint==3.5.0
-  - sudo apt-get install unzip git -y
+  - sudo apt-get install -y ansible ansible-lint unzip git curl wget
+  - git log -1 --format='%H'
+  - export TF_VERSION=1.5.6
+  - export TF_URL="hashicorp-releases.yandexcloud.net"
+  - export TFLINT_VERSION=0.47.0
+  - export TF_INPUT=false
+  - export PACKER_VERSION=1.9.4
+  - export MACH_TYPE=linux_amd64
+  - export TF_CLI_CONFIG_FILE="$HOME/.terraformrc"
   - curl -sLo /tmp/terraform.zip https://${TF_URL}/terraform/${TF_VERSION}/terraform_${TF_VERSION}_${MACH_TYPE}.zip
-  - curl -sLo /tmp/packer.zip https://${TF_URL}/terraform/${PACKER_VERSION}/packer_${PACKER_VERSION}_${MACH_TYPE}.zip
-  - curl -sLo /tmp/tflint.zip https://github.com/terraform-linters/tflint/releases/download/v${ftlint_version}/tflint_${MACH_TYPE}.zip
+  - curl -sLo /tmp/packer.zip https://${TF_URL}/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_${MACH_TYPE}.zip
+  - curl -sLo /tmp/tflint.zip https://github.com/terraform-linters/tflint/releases/download/v${TFLINT_VERSION}/tflint_${MACH_TYPE}.zip
   - mkdir ~/bin
   - unzip /tmp/terraform.zip -d ~/bin
   - unzip /tmp/packer.zip -d ~/bin
   - unzip /tmp/tflint.zip -d ~/bin
   - chmod +x ~/bin/{terraform,packer,tflint}
   - export PATH="~/bin:$PATH"
+  - git version
+  - git config --local gc.auto 0
+  - git config --global --add safe.directory '*'
+  - echo "" ~/.ansible/vault.key
   - tflint -v
   - terraform --version
   - packer --version
+  - ansible --version
   - ansible-lint --version
 script:
-  - terraform validate ./terraform/prod
+  - cp terraform/yandex.tfrc "$HOME/.terraformrc"
+  - cd terraform/prod
+  - terraform init -backend=false
+  - terraform validate
+  - cd ../stage
+  - terraform init -backend=false
+  - terraform validate
+  - cd ../../
   - tflint --var-file=terraform.tfvars --minimum-failure-severity=error --chdir=terraform/prod/
-  - terraform validate ./terraform/stage
   - tflint --var-file=terraform.tfvars --minimum-failure-severity=error --chdir=terraform/stage/
+  - packer plugins install github.com/hashicorp/ansible
+  - packer plugins install github.com/hashicorp/yandex
   - packer validate -var-file=packer/variables.json packer/app.json
   - packer validate -var-file=packer/variables.json packer/db.json
   - cd ansible
+  - openssl aes-256-cbc -k "$vault_key_password" -in vault.key.enc -out ~/.ansible/vault.key -d
   - ansible-lint playbooks/deploy.yml
   - ansible-lint playbooks/clone.yml
   - ansible-lint playbooks/db.yml

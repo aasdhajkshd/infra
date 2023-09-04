@@ -25,8 +25,7 @@ resource "yandex_compute_instance" "reddit-db" {
 
   network_interface {
     subnet_id = var.subnet_id
-    # subnet_id = yandex_vpc_subnet.app-subnet.id
-    nat = true
+    nat       = true
   }
 
   connection {
@@ -37,7 +36,4 @@ resource "yandex_compute_instance" "reddit-db" {
     private_key = file(var.private_key_path)
   }
 
-  # depends_on = [
-  #   yandex_vpc_network.app-network
-  # ]
 }
