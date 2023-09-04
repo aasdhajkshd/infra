@@ -31,6 +31,7 @@ before_install:
   - export PATH="${BIN}:$PATH"; echo $PATH
   - git version; tflint -v; ansible --version; ansible-lint --version; for i in terraform packer tflint; do unzip -o /tmp/$i.zip -d $BIN; chmod +x $BIN/$i; $BIN/$i --version; done
   - unzip -o /tmp/terraform-provider-yandex.zip -d ${TF_PROVIDER_YANDEX_DIR}; ls -Alh ${TF_PROVIDER_YANDEX_DIR}
+  - ln -s $HOME/.terraform/plugins/registry.terraform.io/yandex-cloud $TF_PROVIDER_PLUGINS/registry.terraform.io/hashicorp
 script:
   - echo $TF_PROVIDER_PLUGINS
   - cp terraform/yandex.tfrc "$HOME/.terraformrc"
