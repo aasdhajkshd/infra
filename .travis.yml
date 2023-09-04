@@ -37,7 +37,7 @@ script:
   - echo $TF_PROVIDER_PLUGINS
   - $BIN/terraform --version
   - cp terraform/yandex.tfrc "$HOME/.terraformrc"
-  - cd terraform/prod; mkdir -p .terraform/{providers,modules}
+  - cd terraform/prod; mkdir -p .terraform/{providers/registry.terraform.io/yandex-cloud/yandex/${TF_PROVIDER_YANDEX_VERSION},modules}
   - echo -e -n "[\n \"$TF_PROVIDER_PLUGINS\"\n]" > .terraform/plugin_path
   - echo '{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"app","Source":"../modules/app","Dir":"../modules/app"},{"Key":"db","Source":"../modules/db","Dir":"../modules/db"}]}' > .terraform/modules/modules.json
   - ln -s $TF_PROVIDER_YANDEX_DIR .terraform/providers/registry.terraform.io/yandex-cloud/yandex/${TF_PROVIDER_YANDEX_VERSION}/
