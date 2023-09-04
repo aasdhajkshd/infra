@@ -28,11 +28,9 @@ before_install:
   - mkdir -p ${TF_PROVIDER_YANDEX_DIR}
   - mkdir -p $HOME/.ansible
   - ls -Alh $HOME/bin/; ls -Alh $HOME/
-  - for i in terraform packer tflint; do unzip -o /tmp/$i.zip -d $BIN; done
+  - export PATH="${BIN}:$PATH"; echo $PATH
+  - git version; tflint -v; ansible --version; ansible-lint --version; for i in terraform packer tflint; do unzip -o /tmp/$i.zip -d $BIN; chmod +x $BIN/$i; $BIN/$i --version; done
   - unzip -f /tmp/terraform-provider-yandex.zip -d ${TF_PROVIDER_YANDEX_DIR}
-  - chmod +x ${BIN}/{terraform,packer,tflint}
-  - export PATH="${BIN}:${TF_PROVIDER_YANDEX_DIR}:$PATH"; echo $PATH
-  - git version; tflint -v; for i in terraform packer ansible ansible-lint; do $BIN/$i --version; done
 script:
   - cp terraform/yandex.tfrc "$HOME/.terraformrc"
   - cd terraform/prod
