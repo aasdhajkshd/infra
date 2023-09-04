@@ -41,7 +41,7 @@ script:
   - echo '{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"app","Source":"../modules/app","Dir":"../modules/app"},{"Key":"db","Source":"../modules/db","Dir":"../modules/db"}]}' > .terraform/modules/modules.json
   - ln -s $TF_PROVIDER_YANDEX_DIR .terraform/providers/registry.terraform.io/yandex-cloud/yandex/${TF_PROVIDER_YANDEX_VERSION}/
   - ln -s $TF_PROVIDER_YANDEX_DIR .terraform/providers/registry.terraform.io/hashicorp/yandex/${TF_PROVIDER_YANDEX_VERSION}/
-  - $BIN/terraform providers lock -platform=linux_amd64
+  # - $BIN/terraform providers lock -platform=linux_amd64
   # - $BIN/terraform init -backend=false
   - $BIN/terraform validate
   # - cd ../stage
