@@ -34,9 +34,10 @@ before_install:
   - ln -s $HOME/.terraform/plugins/registry.terraform.io/yandex-cloud $TF_PROVIDER_PLUGINS/registry.terraform.io/hashicorp
 script:
   - echo $TF_PROVIDER_PLUGINS
+  - $BIN/terraform --version
   - cp terraform/yandex.tfrc "$HOME/.terraformrc"
   - cd terraform/prod
-  - $BIN/terraform init -plugin-dir=$TF_PROVIDER_PLUGINS -backend=false
+  - $BIN/terraform init -backend=false
   - $BIN/terraform validate
   - cd ../stage
   - $BIN/terraform init -plugin-dir=$TF_PROVIDER_PLUGINS -backend=false
