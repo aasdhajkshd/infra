@@ -1,6 +1,13 @@
 provider_installation {
+  dev_overrides {
+    "yandex-cloud/yandex" = "/home/travis/.terraform/plugins/registry.terraform.io/yandex-cloud/yandex/0.97.0/linux_amd64"
+  }
+  filesystem_mirror {
+    path = "/home/travis/.terraform/plugins"
+    include = ["registry.terraform.io/*/*"]
+  }
   network_mirror {
-    url = "https://hashicorp-releases.yandexcloud.net/"
+    url = "https://terraform-mirror.yandexcloud.net/"
     include = ["registry.terraform.io/*/*"]
   }
   direct {
