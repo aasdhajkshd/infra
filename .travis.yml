@@ -21,17 +21,17 @@ before_install:
   - curl -sLo /tmp/packer.zip https://${TF_URL}/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_${MACH_TYPE}.zip
   - curl -sLo /tmp/tflint.zip https://github.com/terraform-linters/tflint/releases/download/v${TFLINT_VERSION}/tflint_${MACH_TYPE}.zip
   - curl -sLo /tmp/terraform-provider-yandex.zip https://${TF_URL}/terraform-provider-yandex/${TF_PROVIDER_YANDEX_VERSION}/terraform-provider-yandex_${TF_PROVIDER_YANDEX_VERSION}_${MACH_TYPE}.zip
-  - mkdir -p ${TF_PROVIDER_YANDEX_DIR}
-  - unzip -f /tmp/terraform.zip -d ~/bin
-  - unzip -f /tmp/packer.zip -d ~/bin
-  - unzip -f /tmp/tflint.zip -d ~/bin
-  - unzip -f /tmp/terraform-provider-yandex.zip -d ${TF_PROVIDER_YANDEX_DIR}
-  - chmod +x ~/bin/{terraform,packer,tflint}
+  - mkdir -p ${TF_PROVIDER_YANDEX_DIR} ~/.ansible
+  - ls -Al ~/
+  - sudo unzip -f /tmp/terraform.zip -d ~/bin
+  - sudo unzip -f /tmp/packer.zip -d ~/bin
+  - sudo unzip -f /tmp/tflint.zip -d ~/bin
+  - sudo unzip -f /tmp/terraform-provider-yandex.zip -d ${TF_PROVIDER_YANDEX_DIR}
+  - sudo chmod +x ~/bin/{terraform,packer,tflint}
   - export PATH="~/bin:${TF_PROVIDER_YANDEX_DIR}:$PATH"
-  - git version
   - git config --local gc.auto 0
   - git config --global --add safe.directory '*'
-  - echo "" ~/.ansible/vault.key
+  - git version
   - tflint -v
   - terraform --version
   - packer --version
