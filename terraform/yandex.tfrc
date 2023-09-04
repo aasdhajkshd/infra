@@ -3,7 +3,7 @@ provider_installation {
     "yandex-cloud/yandex" = "/home/travis/.terraform/plugins/registry.terraform.io/yandex-cloud/yandex/0.97.0/linux_amd64"
   }
   filesystem_mirror {
-    path = "/home/travis/.terraform/plugins"
+    path = "/home/travis/.terraform"
     include = ["registry.terraform.io/*/*"]
   }
   network_mirror {

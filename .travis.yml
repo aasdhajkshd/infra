@@ -37,7 +37,7 @@ script:
   - $BIN/terraform --version
   - cp terraform/yandex.tfrc "$HOME/.terraformrc"
   - cd terraform/prod
-  - $BIN/terraform init -backend=false
+  - $BIN/terraform init -plugin-dir=/home/travis/.terraform/plugins/ -backend=false
   - $BIN/terraform validate
   - cd ../stage
   - $BIN/terraform init -plugin-dir=$TF_PROVIDER_PLUGINS -backend=false
