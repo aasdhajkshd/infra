@@ -25,7 +25,7 @@ before_install:
   - curl -sLo /tmp/terraform.zip https://${TF_URL}/terraform/${TF_VERSION}/terraform_${TF_VERSION}_${MACH_TYPE}.zip
   - curl -sLo /tmp/packer.zip https://${TF_URL}/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_${MACH_TYPE}.zip
   - curl -sLo /tmp/tflint.zip https://github.com/terraform-linters/tflint/releases/download/v${TFLINT_VERSION}/tflint_${MACH_TYPE}.zip
-  - mkdir ~/bin
+  - mkdir -p ~/bin
   - unzip /tmp/terraform.zip -d ~/bin
   - unzip /tmp/packer.zip -d ~/bin
   - unzip /tmp/tflint.zip -d ~/bin
