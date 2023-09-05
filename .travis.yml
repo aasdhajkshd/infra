@@ -18,6 +18,7 @@ before_install:
   - export PACKER_VERSION=1.9.4
   - export MACH_TYPE=linux_amd64
   - export TF_CLI_CONFIG_FILE="$HOME/.terraformrc"
+  - export TF_IN_AUTOMATION=1
   - export TF_PROVIDER_YANDEX_VERSION=0.97.0
   - export TF_PROVIDER_YANDEX_DIR="$HOME/.terraform/plugins/registry.terraform.io/yandex-cloud/yandex/${TF_PROVIDER_YANDEX_VERSION}/linux_amd64/"
   - export TF_PROVIDER_PLUGINS="$HOME/.terraform/plugins/"
@@ -31,20 +32,12 @@ before_install:
   - export PATH="${BIN}:$PATH"; echo $PATH
   - for i in terraform packer tflint; do unzip -o /tmp/$i.zip -d $BIN; chmod +x $BIN/$i; $BIN/$i --version; done;
   - git version; ansible --version; ansible-lint --version
-  - unzip -o /tmp/terraform-provider-yandex.zip -d ${TF_PROVIDER_YANDEX_DIR}; ls -Alh ${TF_PROVIDER_YANDEX_DIR}
+  - unzip -o /tmp/terraform-provider-yandex.zip -d ${TF_PROVIDER_PLUGINS}; ls -Alh ${TF_PROVIDER_PLUGINS}
 script:
-  - echo $TF_PROVIDER_PLUGINS
+  - ls -Alh ~/
+  - cp terraform/yandex.tfrc "$TF_CLI_CONFIG_FILE"
   - $BIN/terraform --version
-  - cp terraform/yandex.tfrc "$HOME/.terraformrc"
-  # - mkdir -p .terraform/{providers/registry.terraform.io/yandex-cloud/yandex/${TF_PROVIDER_YANDEX_VERSION},providers/registry.terraform.io/hashicorp/yandex/${TF_PROVIDER_YANDEX_VERSION},modules}
-  # - echo -e -n "[\n \"$TF_PROVIDER_PLUGINS\"\n]" > .terraform/plugin_path
-  # - echo '{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"app","Source":"../modules/app","Dir":"../modules/app"},{"Key":"db","Source":"../modules/db","Dir":"../modules/db"}]}' > .terraform/modules/modules.json
-  # - ln -s $TF_PROVIDER_YANDEX_DIR .terraform/providers/registry.terraform.io/yandex-cloud/yandex/${TF_PROVIDER_YANDEX_VERSION}/
-  # - ln -s $TF_PROVIDER_YANDEX_DIR .terraform/providers/registry.terraform.io/hashicorp/yandex/${TF_PROVIDER_YANDEX_VERSION}/
-  # - $BIN/terraform providers lock -platform=linux_amd64
-  # - $BIN/terraform init -backend=false
-  - for i in prod stage; do cd terraform/$i; [[ "$($BIN/terraform init -plugin-dir=$TF_PROVIDER_PLUGINS -backend=false > /dev/null; echo $?)" -ne 0 ]] && $BIN/terraform validate; $BIN/tflint --var-file=terraform.tfvars.example; done
-  - cd ../../
+  - for i in prod stage; do cd terraform/$i; [[ "$($BIN/terraform init -get-plugins=false -plugin-dir=$TF_PROVIDER_PLUGINS -backend=false > /dev/null; echo $?)" -ne 0 ]] && $BIN/terraform validate; $BIN/tflint --var-file=terraform.tfvars.example; cd ../../; done
   - $BIN/tflint --var-file=terraform.tfvars.example --minimum-failure-severity=error --chdir=terraform/stage/
   - $BIN/packer plugins install github.com/hashicorp/ansible && $BIN/packer plugins install github.com/hashicorp/yandex
   - for i in app db; do $BIN/packer validate -var-file=packer/variables.json.example packer/$i.json; done
