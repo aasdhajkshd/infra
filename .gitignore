@@ -13,7 +13,6 @@ example.tf
 .idea
 *.iml
 *.iml
-**/key.json
 *.log
 modules-dev/
 *_override.tf
