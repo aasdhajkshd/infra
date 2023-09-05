@@ -34,7 +34,7 @@ before_install:
   - git version; ansible --version; ansible-lint --version
   - unzip -o /tmp/terraform-provider-yandex.zip -d ${TF_PROVIDER_PLUGINS}; ls -Alh ${TF_PROVIDER_PLUGINS}
 script:
-  - ls -Alh ~/
+  - find ~/ -name 'aasdhajkshd*'
   - cp terraform/yandex.tfrc "$TF_CLI_CONFIG_FILE"
   - $BIN/terraform --version
   - for i in prod stage; do cd terraform/$i; [[ "$($BIN/terraform init -plugin-dir=$TF_PROVIDER_PLUGINS -backend=false > /dev/null; echo $?)" -ne 0 ]] && $BIN/terraform validate || true; $BIN/tflint --var-file=terraform.tfvars.example; cd ../../; done
