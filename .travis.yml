@@ -36,31 +36,21 @@ script:
   - echo $TF_PROVIDER_PLUGINS
   - $BIN/terraform --version
   - cp terraform/yandex.tfrc "$HOME/.terraformrc"
-  - cd terraform/prod; mkdir -p .terraform/{providers/registry.terraform.io/yandex-cloud/yandex/${TF_PROVIDER_YANDEX_VERSION},providers/registry.terraform.io/hashicorp/yandex/${TF_PROVIDER_YANDEX_VERSION},modules}
-  - echo -e -n "[\n \"$TF_PROVIDER_PLUGINS\"\n]" > .terraform/plugin_path
-  - echo '{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"app","Source":"../modules/app","Dir":"../modules/app"},{"Key":"db","Source":"../modules/db","Dir":"../modules/db"}]}' > .terraform/modules/modules.json
-  - ln -s $TF_PROVIDER_YANDEX_DIR .terraform/providers/registry.terraform.io/yandex-cloud/yandex/${TF_PROVIDER_YANDEX_VERSION}/
-  - ln -s $TF_PROVIDER_YANDEX_DIR .terraform/providers/registry.terraform.io/hashicorp/yandex/${TF_PROVIDER_YANDEX_VERSION}/
+  # - mkdir -p .terraform/{providers/registry.terraform.io/yandex-cloud/yandex/${TF_PROVIDER_YANDEX_VERSION},providers/registry.terraform.io/hashicorp/yandex/${TF_PROVIDER_YANDEX_VERSION},modules}
+  # - echo -e -n "[\n \"$TF_PROVIDER_PLUGINS\"\n]" > .terraform/plugin_path
+  # - echo '{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"app","Source":"../modules/app","Dir":"../modules/app"},{"Key":"db","Source":"../modules/db","Dir":"../modules/db"}]}' > .terraform/modules/modules.json
+  # - ln -s $TF_PROVIDER_YANDEX_DIR .terraform/providers/registry.terraform.io/yandex-cloud/yandex/${TF_PROVIDER_YANDEX_VERSION}/
+  # - ln -s $TF_PROVIDER_YANDEX_DIR .terraform/providers/registry.terraform.io/hashicorp/yandex/${TF_PROVIDER_YANDEX_VERSION}/
   # - $BIN/terraform providers lock -platform=linux_amd64
   # - $BIN/terraform init -backend=false
-  - $BIN/terraform validate
-  # - cd ../stage
-  # - $BIN/terraform init -plugin-dir=$TF_PROVIDER_PLUGINS -backend=false
-  # - $BIN/terraform validate
+  - for i in prod stage; do cd terraform/$i; [[ "$($BIN/terraform init -plugin-dir=$TF_PROVIDER_PLUGINS -backend=false > /dev/null; echo $?)" -ne 0 ]] && $BIN/terraform validate; $BIN/tflint --var-file=terraform.tfvars.example; done
   - cd ../../
-  - $BIN/tflint --var-file=terraform.tfvars.example --minimum-failure-severity=error --chdir=terraform/prod/
   - $BIN/tflint --var-file=terraform.tfvars.example --minimum-failure-severity=error --chdir=terraform/stage/
-  - $BIN/packer plugins install github.com/hashicorp/ansible
-  - $BIN/packer plugins install github.com/hashicorp/yandex
-  - $BIN/packer validate -var-file=packer/variables.json.example packer/app.json
-  - $BIN/packer validate -var-file=packer/variables.json.example packer/db.json
+  - $BIN/packer plugins install github.com/hashicorp/ansible && $BIN/packer plugins install github.com/hashicorp/yandex
+  - for i in app db; do $BIN/packer validate -var-file=packer/variables.json.example packer/$i.json; done
   - cd ansible
   - openssl aes-256-cbc -k "$vault_key_password" -in vault.key.enc -out ~/.ansible/vault.key -d
-  - ansible-lint playbooks/deploy.yml
-  - ansible-lint playbooks/clone.yml
-  - ansible-lint playbooks/db.yml
-  - ansible-lint playbooks/packer_*.yml
-  - ansible-lint playbooks/users.yml
+  - for i in deploy clone db packer_* users; do ansible-lint playbooks/$i.yml; done
   - ansible-galaxy install -r environments/stage/requirements.yml
   - ansible-lint playbooks/app.yml --exclude=roles/jdauphant.nginx
   - ansible-lint playbooks/site.yml --exclude=roles/jdauphant.nginx

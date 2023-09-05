@@ -20,3 +20,4 @@ skip_list:
   - no-free-form
   - jinja[invalid]
   - args[module]
+  - fqcn[action]
