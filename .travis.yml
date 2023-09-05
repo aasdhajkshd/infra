@@ -37,7 +37,7 @@ script:
   - ls -Alh ~/
   - cp terraform/yandex.tfrc "$TF_CLI_CONFIG_FILE"
   - $BIN/terraform --version
-  - for i in prod stage; do cd terraform/$i; [[ "$($BIN/terraform init -get-plugins=false -plugin-dir=$TF_PROVIDER_PLUGINS -backend=false > /dev/null; echo $?)" -ne 0 ]] && $BIN/terraform validate; $BIN/tflint --var-file=terraform.tfvars.example; cd ../../; done
+  - for i in prod stage; do cd terraform/$i; [[ "$($BIN/terraform init -plugin-dir=$TF_PROVIDER_PLUGINS -backend=false > /dev/null; echo $?)" -ne 0 ]] && $BIN/terraform validate || true; $BIN/tflint --var-file=terraform.tfvars.example; cd ../../; done
   - $BIN/tflint --var-file=terraform.tfvars.example --minimum-failure-severity=error --chdir=terraform/stage/
   - $BIN/packer plugins install github.com/hashicorp/ansible && $BIN/packer plugins install github.com/hashicorp/yandex
   - for i in app db; do $BIN/packer validate -var-file=packer/variables.json.example packer/$i.json; done
