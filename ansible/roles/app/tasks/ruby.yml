@@ -13,6 +13,7 @@
 - name: Install ruby and rubygems
   apt: "name={{ item }} state=present"
   with_items:
+    - build-essential
     - dialog
     - rsync
     - dos2unix
@@ -20,7 +21,6 @@
     - telnet
     - ruby-full
     - ruby-bundler
-    - build-essential
   tags: ruby
 
 - name: Install gem bundler
@@ -32,3 +32,4 @@
     force: true
     version: 2.3.26
   become: true
+  tags: ruby

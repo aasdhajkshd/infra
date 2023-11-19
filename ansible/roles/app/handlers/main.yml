@@ -13,4 +13,4 @@
     daemon_reload: true
 - name: Reload systemd
   systemd:
-    daemon_reload: yes
+    daemon_reload: true
